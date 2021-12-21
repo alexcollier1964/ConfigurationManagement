@@ -1,0 +1,24 @@
+{
+    "config": {
+        "C001": {
+            "app01": {
+                "upstream": "www.upstream1.local",
+                "external": "app01.customer1.com"
+            },
+            "app02": {
+                "upstream": "www.upstream2.local",
+                "external": "app02.customer1.com"
+            }
+        },
+        "C002": {
+            "app01": {
+                "upstream": "www.upstream1.local",
+                "external": "app01.customer2.com"
+            },
+            "app02": {
+                "upstream": "www.upstream2.local",
+                "external": "app02.customer2.com"
+            }
+        }
+    }
+}

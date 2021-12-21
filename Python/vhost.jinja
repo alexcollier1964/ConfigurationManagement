@@ -1,0 +1,16 @@
+upstream {{ templatevalues.custapp }} {
+    server  {{ templatevalues.upstream }}       
+}
+
+server {
+    listen 443;
+    server_name  {{ templatevalues.external }};
+    ssl_certificate     {{ templatevalues.external }}.crt;
+    ssl_certificate_key {{ templatevalues.external }}.key;
+
+    access_log logs/{{ templatevalues.cust }}/{{ templatevalues.apptag }}/{{ templatevalues.external }}.access.log main;
+
+    location / {
+        proxy_pass http://{{ templatevalues.custapp }};
+    }
+}
