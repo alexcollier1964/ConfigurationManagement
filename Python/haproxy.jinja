@@ -1,0 +1,45 @@
+global
+    daemon
+    log 127.0.0.1 local0
+    log 127.0.0.1 local1 notice
+    maxconn 4096
+    tune.ssl.default-dh-param 2048
+
+defaults
+    log               global
+    retries           3
+    maxconn           2000
+    timeout connect   5s
+    timeout client    50s
+    timeout server    50s
+
+listen stats
+    bind 127.0.0.1:9090
+    balance
+    mode http
+    stats enable
+    stats auth admin:admin
+
+frontend https_in
+    bind *:443 ssl crt /etc/ssl/certs/
+    mode http
+    acl bob-external hdr(host) -i bob-external
+    acl jim-external hdr(host) -i jim-external
+    use_backend bob-backend if bob-external
+    use_backend jim-backend if jim-external
+
+backend bob
+    balance roundrobin
+    mode http
+    option forwardfor
+    http-request set-header X-Forwarded-Port %[dst_port]
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    server bob-backend
+
+backend jim
+    balance roundrobin
+    mode http
+    option forwardfor
+    http-request set-header X-Forwarded-Port %[dst_port]
+    http-request add-header X-Forwarded-Proto https if { ssl_fc }
+    server jim-backend
